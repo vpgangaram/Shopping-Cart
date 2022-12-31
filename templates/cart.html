@@ -10,5 +10,28 @@
 <body>
     <h1>page 2</h1>
     <a href="home"><button>Home</button></a>
+
+    <div id="app">
+
+        <table class="table table-borderless">
+            <thead>
+            <tr>
+                <th scope="col">Number</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Price</th>
+                <th scope="col">Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for d in cart_info %}
+            <tr>
+                <th scope="row">{{loop.index}}</th>
+                <td>{{ d[1] }}</td>
+                <td>{{ d[2] }}</td>
+                <td><a href="/decrease/{{d[0]}}"><button>-</button></a>{{ d[3] }}<a href="/increase/{{d[0]}}"><button>+</button></a></td>
+            </tr>
+                {% endfor %}
+
+
 </body>
 </html>

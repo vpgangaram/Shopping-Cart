@@ -15,13 +15,11 @@ def recreate_table():
     db = get_db()
     cursor = db.cursor()
 
-    # Drop the table if it exists
     cursor.execute("DROP TABLE IF EXISTS products")
 
     cursor.execute(
         "CREATE TABLE products (id INTEGER PRIMARY KEY, productname TEXT UNIQUE, productprice INTEGER UNIQUE, quantity INTEGER)")
 
-    # Commit the changes to the database
     db.commit()
     db.close()
 
@@ -49,16 +47,6 @@ def index():
 
     for i in range(len(data['result'])):
         data['result'][i]['unit_price'] = res[i]
-
-    # for d in data['results']:
-    #     c.execute(
-    #         'INSERT INTO products( productname, productprice, quantity) VALUES (?,?,?,?)', (d['productname']), d['unit_price'], 0)
-
-    # c.execute("""
-    # SELECT * FROM products
-    # """)
-
-    # data_info = c.fetchall()
     for product in data['result']:
         c.execute('INSERT OR IGNORE INTO products(productname, productprice, quantity) VALUES (?,?,?)',
                   (product['productname'], product['unit_price'], 0))
@@ -68,41 +56,34 @@ def index():
 
     db.commit()
     db.close()
-    return render_template('index.html', data_info=data_info, data=data)
+    return render_template('index.html', data_info=data_info)
 
 
 @app.route('/dex_dex')
 def dex_dex():
-    return render_template('cart.html')
+    cart_info = cart()
+    return render_template('cart.html', cart_info=cart_info)
 
 
 @app.route('/increase/<int:id>', methods=['GET', 'POST'])
 def increase(id):
-    # Connect to the database
     conn = get_db()
     c = conn.cursor()
-    # Execute an UPDATE statement to update the data in the database
     c.execute(
         "UPDATE products SET quantity = quantity + 1 WHERE id=?", (id,))
     conn.commit()
-    # Get the updated data from the database
     c.execute("SELECT quantity FROM products WHERE id=?", (id,))
-    # Return the updated data in the response
     return redirect(url_for('index'))
 
 
 @app.route('/decrease/<int:id>')
 def decrease(id):
-    # Connect to the database
     conn = get_db()
     c = conn.cursor()
-    # Execute an UPDATE statement to update the data in the database
     c.execute(
         "UPDATE products SET quantity = quantity - 1 WHERE id=? AND quantity > 0", (id,))
     conn.commit()
-    # Get the updated data from the database
     c.execute("SELECT quantity FROM products WHERE id=?", (id,))
-    # Return the updated data in the response
     return redirect(url_for('index'))
 # _______________________________________________________________functions________________________________________________________________
 
@@ -112,6 +93,17 @@ def fetchdata():
                             auth=('vinayak.p+1@vtiger.com', 'MtqNrRCJ2Y55g38T'))
     response = response.json()
     return response
+
+
+def cart():
+    db = get_db()
+    c = db.cursor()
+    c.execute('SELECT * FROM products')
+    c_info = c.fetchall()
+
+    db.commit()
+    db.close()
+    return (c_info)
 
 
 if __name__ == '__main__':
