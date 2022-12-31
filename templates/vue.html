@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+
+    <div id="app">
+        <div class="apptitle">Vue.js Theater</div>
+        <div class="movie" @wheel.prevent="wheel">
+          <div class="cards" :class="{ isCartOpen: isCartOpen }">
+            <div class="card" v-for="movie in movies">
+              <div class="left">
+                <div class="cover" :style="bgcss(movie.cover)"></div>
+              </div>
+              <div class="right">
+                <h2>{{ movie.name }}</h2>
+                <h4>{{ movie.type }}</h4>
+                <p v-html="movie.description"></p>
+                <div class="price">{{ movie.price }} $</div>
+                <button class="add" @click="addCart(movie, $event)">+ Add to My Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buybox" :style="bgcss(currentMovie.cover)" v-if="currentMovie"></div>
+        <div class="fixed-control" @click="isCartOpen = !isCartOpen"><i class="fa fa-shopping-cart"></i><span>{{ cart.length }}</span></div>
+        <div class="control" v-if="isCartOpen" :class="{ isCartOpen: isCartOpen }">
+          <div class="panel">
+            <h2>My Movie Cart</h2>
+            <ul>
+              <li v-for="(movie, mid) in cart">
+                <div class="thumbnail" :style="bgcss(movie.cover)"></div>
+                <h3>{{ movie.name }}
+                  <div class="price">{{ movie.price }} $</div>
+                  <div class="remove" @click="cart.splice(mid, 1)">-</div>
+                </h3>
+              </li>
+              <!-- 若購物車是空的-->
+              <li v-if="!cart.length">
+                <h3>Your Cart is Empty! :(</h3>
+              </li>
+              <hr/>
+              <h2>{{ totalPrice }} $</h2>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <script>
+
+var vm = new Vue({
+	el: '#app',
+	data: {
+		movies: [],
+		cart: [],
+		currentMovie: null,
+		isCartOpen: false
+	},
+	created(){
+		let apiUrl = 'https://awiclass.monoame.com/api/command.php?type=get&name=movies'
+		axios.get(apiUrl).then(res => {
+			this.movies = res.data
+		})
+	},
+	methods: {
+		bgcss(url){
+			return {
+				'background-image': 'url('+url+')',
+				'background-position': 'center center',
+				'background-size': 'cover'
+			}
+		},
+		wheel(evt){
+			console.log(evt.deltaY)
+			TweenMax.to('.cards', 0.8, {
+				left: '+=' + evt.deltaY + 'px'
+			})
+		},
+		addCart(movie, evt){
+			this.currentMovie = movie
+			let target = evt.target
+			this.$nextTick(()=>{
+				TweenMax.from('.buybox', 0.8, {
+					left: $(evt.target).offset().left,
+					top: $(evt.target).offset().top,
+					opacity: 1,
+					ease: Power1.easeOut
+				})
+				setTimeout(()=> {
+					this.cart.push(movie)
+				}, 800)
+			})
+		}
+	},
+	watch: {
+		cart(){
+			TweenMax.from('.fa-shopping-cart', 0.3, {
+				scale: 0.5
+			})
+		}
+	},
+	computed: {
+		totalPrice(){
+			return this.cart
+							.map(movie=> movie.price)
+							.reduce((total, p) => total + p, 0)
+		}
+	}
+})
+
+vm.connect('#app')
+      </script>
+    
+</body>
+</html>
