@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, url_for, redirect
+from flask import Flask, render_template, url_for, redirect
 import requests
 import sqlite3
 
@@ -18,7 +18,7 @@ def recreate_table():
     cursor.execute("DROP TABLE IF EXISTS products")
 
     cursor.execute(
-        "CREATE TABLE products (id INTEGER PRIMARY KEY, productname TEXT UNIQUE, productprice INTEGER UNIQUE, quantity INTEGER)")
+        "CREATE TABLE products (id INTEGER PRIMARY KEY, productname TEXT UNIQUE, productprice INTEGER UNIQUE, quantity INTEGER, total INTEGER)")
 
     db.commit()
     db.close()
@@ -48,8 +48,8 @@ def index():
     for i in range(len(data['result'])):
         data['result'][i]['unit_price'] = res[i]
     for product in data['result']:
-        c.execute('INSERT OR IGNORE INTO products(productname, productprice, quantity) VALUES (?,?,?)',
-                  (product['productname'], product['unit_price'], 0))
+        c.execute('INSERT OR IGNORE INTO products(productname, productprice, quantity,total) VALUES (?,?,?,?)',
+                  (product['productname'], product['unit_price'], 0, 0))
 
     c.execute('SELECT * FROM products')
     data_info = c.fetchall()
@@ -61,8 +61,9 @@ def index():
 
 @app.route('/dex_dex')
 def dex_dex():
-    cart_info = cart()
-    return render_template('cart.html', cart_info=cart_info)
+    total = tot()
+    result = res()
+    return render_template('cart.html', total=total, result=result)
 
 
 @app.route('/increase/<int:id>', methods=['GET', 'POST'])
@@ -104,6 +105,31 @@ def cart():
     db.commit()
     db.close()
     return (c_info)
+
+
+def tot():
+    db = get_db()
+    c = db.cursor()
+    c.execute('SELECT * FROM products WHERE quantity>0')
+    data = c.fetchall()
+
+    db.commit()
+    db.close()
+
+    return data
+
+
+def res():
+    db = get_db()
+    c = db.cursor()
+    c.execute(
+        "UPDATE products SET total = (SELECT productprice * quantity FROM products)")
+    data = c.fetchall()
+
+    db.commit()
+    db.close()
+
+    return data
 
 
 if __name__ == '__main__':

@@ -11,8 +11,6 @@
     <h1>page 2</h1>
     <a href="home"><button>Home</button></a>
 
-    <div id="app">
-
         <table class="table table-borderless">
             <thead>
             <tr>
@@ -20,17 +18,39 @@
                 <th scope="col">Product Name</th>
                 <th scope="col">Product Price</th>
                 <th scope="col">Quantity</th>
+                <th scope="col">total</th>
+
             </tr>
             </thead>
             <tbody>
-                {% for d in cart_info %}
+                {% for d in total %}
             <tr>
                 <th scope="row">{{loop.index}}</th>
                 <td>{{ d[1] }}</td>
                 <td>{{ d[2] }}</td>
-                <td><a href="/decrease/{{d[0]}}"><button>-</button></a>{{ d[3] }}<a href="/increase/{{d[0]}}"><button>+</button></a></td>
+                <td>{{ d[3] }}</td>
+                <td>{{d[2]*d[3]}}</td>
             </tr>
+            
                 {% endfor %}
+            <p>GRAND TOTAL: </p>
+            {% set my_tot = 0 %}
+
+            {% for d in total %}
+                {% set my_tot = my_tot + (d[2] * d[3]) %}
+            {% endfor %}
+
+            
+            <p>{{my_tot}}</p>
+            
+            <!-- {%for r in result%}
+            <p>{{r}}</p>
+            {%endfor%} -->
+
+
+
+        
+
 
 
 </body>
