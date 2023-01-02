@@ -5,19 +5,125 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="E:\vtiger crm\s p c git\shoppingCart\templates\styles.css">
     <title>E-Cart</title>
+
+
+    <style>
+        *,
+        ::before,
+        ::after {
+        padding: 0;
+        margin: 0;
+        }
+
+        html {
+        font-size: 62.5%;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+        }
+
+        body {
+        font-family: 'Baskervville', serif;
+        color: linen;
+        background-color: rgb(20, 30, 40);
+        }
+        a {
+        text-decoration: none;
+        color: linen;
+        }
+
+        main {
+        display: grid;
+        grid-template-columns: minmax(2rem, 1fr) minmax(min-content, 94rem) minmax(2rem, 1fr);
+        row-gap: 3rem;
+        }
+        body{
+            font-family: Linotype Didot, Abril Fatface, Verdana, Geneva, Tahoma, sans-serif;
+        }
+        td, th {
+            text-align: center;
+        }
+        .tbutton{
+            margin-right: 5px ;
+            margin-left: 5px;
+            display: inline;
+            color:orangered;            
+            font-size: 1.5rem;
+
+        }
+        .tbutton:hover{
+            
+            margin-right: 5px ;
+            margin-left: 5px;
+            display: inline;
+            color:gold;            
+            font-size: 2rem;
+        }
+        .button{
+            width:80vw;            
+            font-family: 'Anton', sans-serif;
+            align-items:center;
+            margin-left: 5vw;
+            font-size: 1.25vw;
+            border-radius: 10px;
+        }
+        .button:hover{
+            width:60vw;            
+            font-family: 'Anton', sans-serif;
+            align-items:center;
+            margin-left: 10vw;
+            font-size: 1.5vw;
+            border-radius: 50px;
+
+        }
+
+
+        h1 {
+        font-family: 'Anton', sans-serif;
+        }
+        .heading {
+        grid-column: 2 / 3;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 1.5rem;
+        }
+        .hero {
+        grid-column: 1 / -1;
+        position: relative;
+        }
+
+        .hero-title {
+        text-align: center;
+        color: orangered;
+        font-size: 6rem;
+        }
+        .hero-subtitle {
+        font-size: 1.8rem;
+        color: orangered;
+        text-align: center;
+        }
+        .first {
+        color: linen;
+        }
+    </style>
+    
+
 </head>
-<body>
+<body class="main">
 
 
     <div id="app">
 
-        <h1>Products</h1>
-        <a href='dex_dex'><button>checkout</button></a>
+        <h1 class="hero-title">Products</h1>
+
+        
+       
 
         <table class="table table-borderless">
-            <thead>
+            <thead class="hero-subtitle">
             <tr>
                 <th scope="col">Number</th>
                 <th scope="col">Product Name</th>
@@ -25,13 +131,13 @@
                 <th scope="col">Quantity</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="first">
                 {% for d in data_info %}
-            <tr>
+            <tr >
                 <th scope="row">{{loop.index}}</th>
                 <td>{{ d[1] }}</td>
                 <td>{{ d[2] }}</td>
-                <td><a href="/decrease/{{d[0]}}"><button>-</button></a>{{ d[3] }}<a href="/increase/{{d[0]}}"><button>+</button></a></td>
+                <td><a href="/decrease/{{d[0]}}"><button class="btn btn-clear"><b><p class="tbutton">-</p></b></button></a>{{ d[3] }}<a href="/increase/{{d[0]}}"><button class="btn btn-clear"><b><p class="tbutton">+</p></b></button></a></td>
             </tr>
                 {% endfor %}
             
@@ -41,10 +147,13 @@
 
 
     </div>
+    <div>
+        <div class="button"> <a href='dex_dex'><button class="button btn btn-warning">checkout</button></a></div>
+    </div>
 
     
 
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
     
 </body>
